@@ -40,7 +40,7 @@ export async function openShortUrl (request, response){
         await database.query('UPDATE urls SET "visitCount" = "visitCount" + 1 WHERE "shortUrl" = $1', [url.shortUrl]);
         response.redirect(url.url);
     } catch (error) {
-        return response.status(500).send(error.message);
+        response.sendStatus(500);
     }
 }
 
@@ -60,6 +60,6 @@ export async function deleteURL (request, response){
     await database.query('DELETE FROM urls WHERE id=$1', [id]);
     response.sendStatus(204);
     } catch (error) {
-        return response.status(500).send(error.message);
+        response.sendStatus(500);
     }
 }

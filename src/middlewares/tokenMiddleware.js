@@ -23,5 +23,4 @@ export async function validateToken (request, response, next){
     } catch (error) {
         return response.status(500).send(error.message);
     }
-
 }
