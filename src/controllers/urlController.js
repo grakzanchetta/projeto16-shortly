@@ -17,18 +17,15 @@ export async function getURLid (request, response){
     const { id } = request.params;
 
     try {
-        const result = await database.query(`SELECT * FROM urls WHERE id = $1`, [id]);
+        const result = await database.query(`SELECT id, "shortUrl", url FROM urls WHERE id = $1`, [id]);
         if (result.rowCount === 0){
             return response.sendStatus(404)
         }
         const [url] = result.rows;
-        delete url.visitCount;
-        delete url.userId;
-        delete url.createdAt;
         response.send(url)
 
     } catch (error) {
-        
+        response.status(500).send(error.message);
     }
 }
 
@@ -45,6 +42,24 @@ export async function openShortUrl (request, response){
     } catch (error) {
         return response.status(500).send(error.message);
     }
+}
 
+export async function deleteURL (request, response){
+    const { id } = request.params;
+    const { user } = response.locals;
 
+    try {
+        const result = await database.query(`SELECT * FROM urls WHERE id = $1`, [id]);
+        if (result.rowCount === 0){
+            return response.sendStatus(404)
+        }
+    const [url] = result.rows;
+    if (url.userId !== user.id){
+        return response.sendStatus(401);
+    }
+    await database.query('DELETE FROM urls WHERE id=$1', [id]);
+    response.sendStatus(204);
+    } catch (error) {
+        return response.status(500).send(error.message);
+    }
 }

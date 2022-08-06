@@ -35,3 +35,4 @@ export async function loginUser (request, response){
         response.status(500).send(error.message);
     }
 }
+
