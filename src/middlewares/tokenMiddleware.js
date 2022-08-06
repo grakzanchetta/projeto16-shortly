@@ -1,7 +1,6 @@
 import database from "../databases/database.js";
 
 export async function validateToken (request, response, next){
-    
     const authorization = request.headers.authorization;
     const token = authorization?.replace("Bearer ", "");
     if (!token){

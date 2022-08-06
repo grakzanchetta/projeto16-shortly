@@ -37,9 +37,7 @@ export async function loginUser (request, response){
 }
 
 export async function getMyUser(request, response) {
-    
     const token = request.headers.authorization?.replace("Bearer ", "");
-
     try {
         const result = await database.query('SELECT users.id AS id, users.name AS name FROM users JOIN sessions ON users.id = sessions."userId" WHERE token = $1', [token]);
         const [user] = result.rows;
@@ -58,5 +56,14 @@ export async function getMyUser(request, response) {
         }); 
     } catch (error) {
         response.sendStatus(500);
+    }
+}
+
+export async function getRanking (request, response){
+    try {
+        const ranking = await database.query('SELECT users.id, users.name, COUNT(urls.id) as "linksCount", SUM(urls."visitCount") as "visitCount" FROM urls JOIN users ON urls."userId" = users.id GROUP BY users.id ORDER BY "visitCount" DESC LIMIT 10');
+        response.send(ranking.rows);
+    } catch (error) {
+        response.status(500).send(error.message)
     }
 }

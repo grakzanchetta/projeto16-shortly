@@ -15,7 +15,6 @@ export async function shortenURL (request, response){
 
 export async function getURLid (request, response){
     const { id } = request.params;
-
     try {
         const result = await database.query(`SELECT id, "shortUrl", url FROM urls WHERE id = $1`, [id]);
         if (result.rowCount === 0){
@@ -47,7 +46,6 @@ export async function openShortUrl (request, response){
 export async function deleteURL (request, response){
     const { id } = request.params;
     const { user } = response.locals;
-
     try {
         const result = await database.query(`SELECT * FROM urls WHERE id = $1`, [id]);
         if (result.rowCount === 0){
